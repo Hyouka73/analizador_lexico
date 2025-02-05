@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador Léxico SQL</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Analizador Léxico SQL</h1>
+        <textarea id="sqlInput" placeholder="Ingresa tu consulta SQL aquí..."></textarea>
+        <button onclick="analizarSQL()">Analizar</button>
+        <table id="tokensTable">
+            <thead>
+                <tr>
+                    <th>Token</th>
+                    <th>Tipo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Los tokens se insertarán aquí -->
+            </tbody>
+        </table>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
