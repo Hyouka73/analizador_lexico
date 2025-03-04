@@ -3,26 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analizador Léxico SQL</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Compilador SQL</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Analizador Léxico SQL</h1>
-        <textarea id="sqlInput" placeholder="Ingresa tu consulta SQL aquí..."></textarea>
-        <button onclick="analizarSQL()">Analizar</button>
-        <table id="tokensTable">
-            <thead>
-                <tr>
-                    <th>Token</th>
-                    <th>Tipo</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Los tokens se insertarán aquí -->
-            </tbody>
-        </table>
+        <h1>Compilador SQL</h1>
+        <div class="input-container">
+            <div id="lineNumbers" class="line-numbers"></div>
+            <textarea id="sqlInput" placeholder="Ingresa tu consulta SQL aquí..."></textarea>
+        </div>
+        <button id="analyzeButton">Analizar</button>
+        
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <div id="loadingMessage">Cargando...</div>
+        </div>
+
+        <!-- Contenedor de Resultados -->
+        <div id="resultsContainer" class="section" style="display: none;">
+            <!-- Botones para alternar entre secciones -->
+            <div class="tabs">
+                <button id="showTokens" class="tab-button">Tokens</button>
+                <button id="showErrors" class="tab-button" style="display: none;">Errores</button>
+                <button id="showTree" class="tab-button" style="display: none;">Árbol Sintáctico</button>
+            </div>
+
+            <!-- Sección de Tokens -->
+            <div id="tokensSection" class="tab-content">
+                <h2>Tokens Generados</h2>
+                <table id="tokensTable">
+                    <thead>
+                        <tr>
+                            <th>Token</th>
+                            <th>Tipo</th>
+                            <th>Línea</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <!-- Sección de Errores -->
+            <div id="errorSection" class="tab-content" style="display: none;">
+                <h2>Errores Encontrados</h2>
+                <div id="errorMessages"></div>
+            </div>
+
+            <!-- Sección del Árbol Sintáctico -->
+            <div id="treeSection" class="tab-content" style="display: none;">
+                <h2>Árbol Sintáctico</h2>
+                <pre id="syntaxTree"></pre>
+            </div>
+        </div>
     </div>
-    <script src="app.js"></script>
+    
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>
