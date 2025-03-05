@@ -1,7 +1,39 @@
 import { tokenizarSQL } from './lexer.js';
 import { parseSQL } from './parser.js';
 
-function analizarSQL() {
+// Mensajes para el Easter egg (rotarán cada vez)
+let messageIndex = 0;
+const validEmailMessages = [
+    "¡Ups! Esto es un analizador SQL, no un cliente de email. ¿Buscabas enviar un mensaje a tu crush? 💌",
+    "Interesante dirección de correo... ¿Sabías que los analizadores léxicos detectan patrones como este? 🔍",
+    "¡Email detectado! Nuestro lexer está más interesado en palabras clave como SELECT o JOIN 😉"
+];
+
+const invalidEmailMessages = [
+    "¿Eso es un email? Hasta el parser sintáctico se rió de tu intento 😂",
+    "Error de formato: Falta el dominio (y probablemente otras cosas). ¿Necesitas un analizador léxico para emails?",
+    "¡Alerta! Patrón email detectado... pero mal implementado. ¿Quieres que te enseñemos expresiones regulares?"
+];
+
+// Mensajes educativos para el proceso de análisis
+const processMessages = [
+    "🔍 Iniciando análisis: ¿Será un SELECT o un DROP TABLE? 🤔",
+    "📧 Paso 1: Verificando que no sea un email (no somos Outlook) ✅",
+    "🔨 Tokenizando: Dividiendo tu consulta en piezas comprensibles",
+    "🧐 Analizando sintaxis: Buscando errores como un profesor estricto",
+    "🌳 Construyendo árbol sintáctico: La estructura lógica de tu consulta",
+    "✅ Proceso completado: Mostrando resultados finales 🔬"
+];
+
+let currentProcessStep = 0;
+
+function actualizarMensajeProceso(paso) {
+    const loadingMessage = document.getElementById('loadingMessage');
+    loadingMessage.textContent = processMessages[paso];
+    currentProcessStep = paso;
+}
+
+async function analizarSQL() {
     const sqlInput = document.getElementById('sqlInput').value.trim();
     const tokensTableBody = document.querySelector('#tokensTable tbody');
     const loadingIndicator = document.getElementById('loading');
@@ -29,33 +61,59 @@ function analizarSQL() {
         return;
     }
 
+    // Easter Egg: Detección de correos electrónicos
+    actualizarMensajeProceso(1); // Mostrar paso de verificación de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (emailRegex.test(sqlInput)) {
+        alert(validEmailMessages[messageIndex % validEmailMessages.length]);
+        messageIndex++;
+        return;
+    } else if (sqlInput.includes('@')) {
+        alert(invalidEmailMessages[messageIndex % invalidEmailMessages.length]);
+        messageIndex++;
+        return;
+    }
+
     // Mostrar el indicador de carga
     loadingIndicator.style.display = 'block';
+    actualizarMensajeProceso(0);
 
-    setTimeout(() => {
-        // Tokenización
+    try {
+        // Fase 1: Tokenización
+        await new Promise(resolve => setTimeout(resolve, 800));
+        actualizarMensajeProceso(2);
         const tokens = tokenizarSQL(sqlInput);
         mostrarTokens(tokens, tokensTableBody);
 
-        setTimeout(() => {
-            // Análisis sintáctico
-            const { statements, errors } = parseSQL(tokens);
-            loadingIndicator.style.display = 'none'; // Ocultar el loader
-            resultsContainer.style.display = 'block'; // Mostrar resultados
+        // Fase 2: Análisis sintáctico
+        await new Promise(resolve => setTimeout(resolve, 800));
+        actualizarMensajeProceso(3);
+        const { statements, errors } = parseSQL(tokens);
 
-            if (errors.length > 0) {
-                mostrarErrores(errors);
-                showErrorsButton.style.display = 'block'; // Mostrar el botón de errores
-                showTreeButton.style.display = 'none'; // Ocultar el botón del árbol sintáctico
-                mostrarSeccion('errorSection'); // Mostrar la sección de errores
-            } else {
-                mostrarArbolSintactico(statements);
-                showTreeButton.style.display = 'block'; // Mostrar el botón del árbol sintáctico
-                showErrorsButton.style.display = 'none'; // Ocultar el botón de errores
-                mostrarSeccion('treeSection'); // Mostrar la sección del árbol sintáctico
-            }
-        }, 1000);
-    }, 1000);
+        // Fase 3: Resultados finales
+        await new Promise(resolve => setTimeout(resolve, 800));
+        actualizarMensajeProceso(5);
+        
+        loadingIndicator.style.display = 'none';
+        resultsContainer.style.display = 'block';
+
+        if (errors.length > 0) {
+            mostrarErrores(errors);
+            showErrorsButton.style.display = 'block';
+            mostrarSeccion('errorSection');
+        } else {
+            actualizarMensajeProceso(4);
+            await new Promise(resolve => setTimeout(resolve, 400));
+            mostrarArbolSintactico(statements);
+            showTreeButton.style.display = 'block';
+            mostrarSeccion('treeSection');
+        }
+    } catch (error) {
+        console.error('Error en el análisis:', error);
+        loadingIndicator.style.display = 'none';
+        alert("¡Oops! Algo salió mal en el análisis. ¿Probaste con un SELECT básico?");
+    }
 }
 
 function mostrarTokens(tokens, tableBody) {

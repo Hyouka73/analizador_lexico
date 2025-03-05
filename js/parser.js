@@ -73,6 +73,42 @@ class SQLParser {
                 );
         }
     }
+    // Nueva función para manejar SELECT
+    parseSelect() {
+        this.expect('select');
+        
+        const columns = [];
+        while (this.peek() !== 'from') {
+            const columnToken = this.tokens[this.currentTokenIndex];
+            columns.push({
+                value: this.consume(),
+                line: columnToken.line,
+                column: columnToken.column
+            });
+            
+            if (this.peek() === ',') this.expect(',');
+        }
+        
+        this.expect('from');
+        
+        const tableToken = this.tokens[this.currentTokenIndex];
+        const table = this.consume();
+        
+        let whereClause = null;
+        if (this.peek() === 'where') {
+            this.expect('where');
+            whereClause = this.parseCondition();
+        }
+        
+        this.expect(';');
+        
+        return { 
+            type: 'select', 
+            columns,
+            table: { value: table, line: tableToken.line, column: tableToken.column },
+            whereClause 
+        };
+    }
 
     // DELETE corregido (sintaxis estándar SQL)
     parseDelete() {
@@ -189,6 +225,8 @@ class SQLParser {
             value: { value, line: valueToken.line, column: valueToken.column }
         };
     }
+
+    
 }
 
 export function parseSQL(tokens) {
