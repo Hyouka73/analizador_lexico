@@ -183,7 +183,7 @@ function determinarTipoToken(token) {
     // Operadores
     if (SQL_DEFINITIONS.operators.relational.includes(token)) return TOKEN_TYPES.OPERATOR.RELATIONAL;
     if (SQL_DEFINITIONS.operators.logical.includes(upperToken)) return TOKEN_TYPES.OPERATOR.LOGICAL;
-    if (SQL_DEFINITIONS.operators.arithmetic.includes(token)) return TOKEN_TYPES.OPERATOR.ARITHMETIC;
+    if (SQL_DEFINITIONS.operators.arithmetic.includes(token) && token !== '*') return TOKEN_TYPES.OPERATOR.ARITHMETIC;
     if (SQL_DEFINITIONS.operators.bitwise.includes(token)) return TOKEN_TYPES.OPERATOR.BITWISE;
 
     // Delimitadores y especiales

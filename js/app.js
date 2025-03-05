@@ -1,5 +1,5 @@
 import { tokenizarSQL } from './lexer.js';
-import { parse } from './parser.js';
+import { parseSQL } from './parser.js';
 
 function analizarSQL() {
     const sqlInput = document.getElementById('sqlInput').value.trim();
@@ -39,7 +39,7 @@ function analizarSQL() {
 
         setTimeout(() => {
             // Análisis sintáctico
-            const { statements, errors } = parse(tokens);
+            const { statements, errors } = parseSQL(tokens);
             loadingIndicator.style.display = 'none'; // Ocultar el loader
             resultsContainer.style.display = 'block'; // Mostrar resultados
 
@@ -60,6 +60,7 @@ function analizarSQL() {
 
 function mostrarTokens(tokens, tableBody) {
     if (tokens.length === 0) return;
+    console.log(tokens);
 
     tokens.forEach(({ token, tipo, line }) => {
         const row = document.createElement('tr');
