@@ -57,7 +57,11 @@ async function analizarSQL() {
     showTokensButton.style.display = 'block'; // Mostrar el botón de tokens por defecto
 
     if (sqlInput === '') {
-        alert("Por favor, ingresa una consulta SQL.");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Advertencia',
+            text: 'Por favor, ingresa una consulta SQL.'
+        });
         return;
     }
 
@@ -66,17 +70,25 @@ async function analizarSQL() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
     if (emailRegex.test(sqlInput)) {
-        alert(validEmailMessages[messageIndex % validEmailMessages.length]);
+        Swal.fire({
+            icon: 'info',
+            title: 'Correo Detectado',
+            text: validEmailMessages[messageIndex % validEmailMessages.length]
+        });
         messageIndex++;
         return;
     } else if (sqlInput.includes('@')) {
-        alert(invalidEmailMessages[messageIndex % invalidEmailMessages.length]);
+        Swal.fire({
+            icon: 'error',
+            title: 'Correo Inválido',
+            text: invalidEmailMessages[messageIndex % invalidEmailMessages.length]
+        });
         messageIndex++;
         return;
     }
 
     // Mostrar el indicador de carga
-    loadingIndicator.style.display = 'block';
+    loadingIndicator.style.display = 'flex';
     actualizarMensajeProceso(0);
 
     try {
@@ -112,7 +124,11 @@ async function analizarSQL() {
     } catch (error) {
         console.error('Error en el análisis:', error);
         loadingIndicator.style.display = 'none';
-        alert("¡Oops! Algo salió mal en el análisis. ¿Probaste con un SELECT básico?");
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: '¡Oops! Algo salió mal en el análisis. ¿Probaste con un SELECT básico?'
+        });
     }
 }
 
